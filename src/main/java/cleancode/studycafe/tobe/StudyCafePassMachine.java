@@ -3,79 +3,77 @@ package cleancode.studycafe.tobe;
 import cleancode.studycafe.tobe.exception.AppException;
 import cleancode.studycafe.tobe.io.InputHandler;
 import cleancode.studycafe.tobe.io.OutputHandler;
-import cleancode.studycafe.tobe.io.StudyCafeFileHandler;
-import cleancode.studycafe.tobe.model.StudyCafeLockerPass;
-import cleancode.studycafe.tobe.model.StudyCafePass;
+import cleancode.studycafe.tobe.io.StudyCafeRepository;
+import cleancode.studycafe.tobe.lockerpass.LockerPass;
+import cleancode.studycafe.tobe.lockerpass.LockerPasses;
 import cleancode.studycafe.tobe.model.StudyCafePassType;
-
-import java.util.List;
+import cleancode.studycafe.tobe.pass.Pass;
+import cleancode.studycafe.tobe.pass.StudyCafePasses;
 
 public class StudyCafePassMachine {
 
-    private final InputHandler inputHandler = new InputHandler();
-    private final OutputHandler outputHandler = new OutputHandler();
+  private final InputHandler inputHandler;
+  private final OutputHandler outputHandler;
+  private final StudyCafeRepository repository;
 
-    public void run() {
-        try {
-            outputHandler.showWelcomeMessage();
-            outputHandler.showAnnouncement();
+  public StudyCafePassMachine(InputHandler inputHandler, OutputHandler outputHandler,
+      StudyCafeRepository studyCafeRepository) {
+    this.inputHandler = inputHandler;
+    this.outputHandler = outputHandler;
+    this.repository = studyCafeRepository;
+  }
 
-            outputHandler.askPassTypeSelection();
-            StudyCafePassType studyCafePassType = inputHandler.getPassTypeSelectingUserAction();
+  public void run() {
+    try {
+      outputHandler.showWelcomeMessage();
+      outputHandler.showAnnouncement();
+      outputHandler.askPassTypeSelection();
 
-            if (studyCafePassType == StudyCafePassType.HOURLY) {
-                StudyCafeFileHandler studyCafeFileHandler = new StudyCafeFileHandler();
-                List<StudyCafePass> studyCafePasses = studyCafeFileHandler.readStudyCafePasses();
-                List<StudyCafePass> hourlyPasses = studyCafePasses.stream()
-                    .filter(studyCafePass -> studyCafePass.getPassType() == StudyCafePassType.HOURLY)
-                    .toList();
-                outputHandler.showPassListForSelection(hourlyPasses);
-                StudyCafePass selectedPass = inputHandler.getSelectPass(hourlyPasses);
-                outputHandler.showPassOrderSummary(selectedPass, null);
-            } else if (studyCafePassType == StudyCafePassType.WEEKLY) {
-                StudyCafeFileHandler studyCafeFileHandler = new StudyCafeFileHandler();
-                List<StudyCafePass> studyCafePasses = studyCafeFileHandler.readStudyCafePasses();
-                List<StudyCafePass> weeklyPasses = studyCafePasses.stream()
-                    .filter(studyCafePass -> studyCafePass.getPassType() == StudyCafePassType.WEEKLY)
-                    .toList();
-                outputHandler.showPassListForSelection(weeklyPasses);
-                StudyCafePass selectedPass = inputHandler.getSelectPass(weeklyPasses);
-                outputHandler.showPassOrderSummary(selectedPass, null);
-            } else if (studyCafePassType == StudyCafePassType.FIXED) {
-                StudyCafeFileHandler studyCafeFileHandler = new StudyCafeFileHandler();
-                List<StudyCafePass> studyCafePasses = studyCafeFileHandler.readStudyCafePasses();
-                List<StudyCafePass> fixedPasses = studyCafePasses.stream()
-                    .filter(studyCafePass -> studyCafePass.getPassType() == StudyCafePassType.FIXED)
-                    .toList();
-                outputHandler.showPassListForSelection(fixedPasses);
-                StudyCafePass selectedPass = inputHandler.getSelectPass(fixedPasses);
+      StudyCafePassType studyCafePassType = inputHandler.getPassTypeSelectingUserAction();
 
-                List<StudyCafeLockerPass> lockerPasses = studyCafeFileHandler.readLockerPasses();
-                StudyCafeLockerPass lockerPass = lockerPasses.stream()
-                    .filter(option ->
-                        option.getPassType() == selectedPass.getPassType()
-                            && option.getDuration() == selectedPass.getDuration()
-                    )
-                    .findFirst()
-                    .orElse(null);
+      StudyCafePasses passes = getFilteredStudyCafePasses(studyCafePassType);
 
-                boolean lockerSelection = false;
-                if (lockerPass != null) {
-                    outputHandler.askLockerPass(lockerPass);
-                    lockerSelection = inputHandler.getLockerSelection();
-                }
+      outputHandler.showPassListForSelection(passes);
 
-                if (lockerSelection) {
-                    outputHandler.showPassOrderSummary(selectedPass, lockerPass);
-                } else {
-                    outputHandler.showPassOrderSummary(selectedPass, null);
-                }
-            }
-        } catch (AppException e) {
-            outputHandler.showSimpleMessage(e.getMessage());
-        } catch (Exception e) {
-            outputHandler.showSimpleMessage("알 수 없는 오류가 발생했습니다.");
-        }
+      Pass selectedPass = getSelectedPassFromUserInput(passes);
+      LockerPass lockerPass = chooseLockerPass(selectedPass);
+
+      outputHandler.showPassOrderSummary(selectedPass, lockerPass);
+
+    } catch (AppException e) {
+      outputHandler.showExceptionMessage(e);
+    } catch (Exception e) {
+      outputHandler.showSimpleMessage("알 수 없는 오류가 발생했습니다.");
     }
+  }
 
+  private LockerPass chooseLockerPass(Pass selectedPass) {
+    if (selectedPass.canChooseLockerPass()) {
+      LockerPass lockerPass = getLockerPasses().getBy(selectedPass);
+      if (checkLockerChosen(lockerPass)) {
+        return lockerPass;
+      }
+    }
+    return LockerPass.EMPTY_LOCKER;
+  }
+
+  private boolean checkLockerChosen(LockerPass lockerPass) {
+    boolean lockerSelection;
+    outputHandler.askLockerPass(lockerPass);
+    lockerSelection = inputHandler.getLockerSelection();
+    return lockerSelection;
+  }
+
+  private LockerPasses getLockerPasses() {
+    return repository.getLockerPass();
+  }
+
+  private StudyCafePasses getFilteredStudyCafePasses(StudyCafePassType studyCafePassType) {
+    return repository.getStudyCafePass().filtered(studyCafePassType);
+  }
+
+  private Pass getSelectedPassFromUserInput(StudyCafePasses passes) {
+    int indexFromUser = inputHandler.getIndexFromUser(passes);
+    return passes.get(indexFromUser);
+  }
 }

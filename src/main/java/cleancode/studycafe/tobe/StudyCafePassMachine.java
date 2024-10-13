@@ -1,25 +1,28 @@
 package cleancode.studycafe.tobe;
 
 import cleancode.studycafe.tobe.exception.AppException;
+import cleancode.studycafe.tobe.io.ConsoleInputHandler;
+import cleancode.studycafe.tobe.io.ConsoleOutputHandler;
 import cleancode.studycafe.tobe.io.InputHandler;
 import cleancode.studycafe.tobe.io.OutputHandler;
+import cleancode.studycafe.tobe.model.StudyCafePassType;
 import cleancode.studycafe.tobe.model.lockerpass.LockerPass;
 import cleancode.studycafe.tobe.model.lockerpass.LockerPasses;
-import cleancode.studycafe.tobe.model.StudyCafePassType;
-import cleancode.studycafe.tobe.provider.LockerPassProvider;
-import cleancode.studycafe.tobe.provider.SeatPassProvider;
 import cleancode.studycafe.tobe.model.seatpass.SeatPass;
 import cleancode.studycafe.tobe.model.seatpass.SeatPasses;
+import cleancode.studycafe.tobe.provider.LockerPassProvider;
+import cleancode.studycafe.tobe.provider.SeatPassProvider;
 
 public class StudyCafePassMachine {
 
-  private final InputHandler inputHandler;
-  private final OutputHandler outputHandler;
+  private final InputHandler inputHandler = new ConsoleInputHandler();
+  private final OutputHandler outputHandler = new ConsoleOutputHandler();
 
   private final SeatPassProvider seatPassProvider;
   private final LockerPassProvider lockerPassProvider;
 
-  public StudyCafePassMachine(SeatPassProvider seatPassProvider, LockerPassProvider lockerPassProvider) {
+  public StudyCafePassMachine(SeatPassProvider seatPassProvider,
+      LockerPassProvider lockerPassProvider) {
     this.seatPassProvider = seatPassProvider;
     this.lockerPassProvider = lockerPassProvider;
   }

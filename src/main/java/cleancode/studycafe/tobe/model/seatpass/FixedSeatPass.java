@@ -1,21 +1,21 @@
-package cleancode.studycafe.tobe.pass;
+package cleancode.studycafe.tobe.model.seatpass;
 
 import cleancode.studycafe.tobe.model.StudyCafePassType;
 
-public class FixedPass implements Pass{
+public class FixedSeatPass implements SeatPass {
 
   private final int duration;
   private final int price;
   private final double discountRate;
 
-  private FixedPass(int duration, int price, double discountRate) {
+  private FixedSeatPass(int duration, int price, double discountRate) {
     this.duration = duration;
     this.price = price;
     this.discountRate = discountRate;
   }
 
-  public static FixedPass of(int duration, int price, double discountRate) {
-    return new FixedPass(duration, price, discountRate);
+  public static FixedSeatPass of(int duration, int price, double discountRate) {
+    return new FixedSeatPass(duration, price, discountRate);
   }
 
   @Override

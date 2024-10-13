@@ -1,22 +1,22 @@
-package cleancode.studycafe.tobe.pass;
+package cleancode.studycafe.tobe.model.seatpass;
 
 import cleancode.studycafe.tobe.model.StudyCafePassType;
 import java.util.List;
 
-public class StudyCafePasses {
+public class SeatPasses {
 
   public static final int MINIMUM_INDEX = 0;
-  private final List<Pass> passes;
+  private final List<SeatPass> passes;
 
-  private StudyCafePasses(List<Pass> passes) {
+  private SeatPasses(List<SeatPass> passes) {
     this.passes = passes;
   }
 
-  public static StudyCafePasses from(List<Pass> passes) {
-    return new StudyCafePasses(passes);
+  public static SeatPasses from(List<SeatPass> passes) {
+    return new SeatPasses(passes);
   }
 
-  public StudyCafePasses filtered(StudyCafePassType type) {
+  public SeatPasses filtered(StudyCafePassType type) {
     return from(passes.stream()
         .filter(it -> it.isEqualsType(type))
         .toList());
@@ -26,7 +26,7 @@ public class StudyCafePasses {
     return passes.size();
   }
 
-  public Pass get(int index) {
+  public SeatPass get(int index) {
     if (isIndexMoreOrEqualsThan(MINIMUM_INDEX)) {
       return passes.get(index);
     }

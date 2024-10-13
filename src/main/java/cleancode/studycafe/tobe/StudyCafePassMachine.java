@@ -3,40 +3,34 @@ package cleancode.studycafe.tobe;
 import cleancode.studycafe.tobe.exception.AppException;
 import cleancode.studycafe.tobe.io.InputHandler;
 import cleancode.studycafe.tobe.io.OutputHandler;
-import cleancode.studycafe.tobe.io.StudyCafeRepository;
-import cleancode.studycafe.tobe.lockerpass.LockerPass;
-import cleancode.studycafe.tobe.lockerpass.LockerPasses;
+import cleancode.studycafe.tobe.model.lockerpass.LockerPass;
+import cleancode.studycafe.tobe.model.lockerpass.LockerPasses;
 import cleancode.studycafe.tobe.model.StudyCafePassType;
-import cleancode.studycafe.tobe.pass.Pass;
-import cleancode.studycafe.tobe.pass.StudyCafePasses;
+import cleancode.studycafe.tobe.provider.LockerPassProvider;
+import cleancode.studycafe.tobe.provider.SeatPassProvider;
+import cleancode.studycafe.tobe.model.seatpass.SeatPass;
+import cleancode.studycafe.tobe.model.seatpass.SeatPasses;
 
 public class StudyCafePassMachine {
 
   private final InputHandler inputHandler;
   private final OutputHandler outputHandler;
-  private final StudyCafeRepository repository;
 
-  public StudyCafePassMachine(InputHandler inputHandler, OutputHandler outputHandler,
-      StudyCafeRepository studyCafeRepository) {
-    this.inputHandler = inputHandler;
-    this.outputHandler = outputHandler;
-    this.repository = studyCafeRepository;
+  private final SeatPassProvider seatPassProvider;
+  private final LockerPassProvider lockerPassProvider;
+
+  public StudyCafePassMachine(SeatPassProvider seatPassProvider, LockerPassProvider lockerPassProvider) {
+    this.seatPassProvider = seatPassProvider;
+    this.lockerPassProvider = lockerPassProvider;
   }
 
   public void run() {
     try {
       outputHandler.showWelcomeMessage();
       outputHandler.showAnnouncement();
-      outputHandler.askPassTypeSelection();
 
-      StudyCafePassType studyCafePassType = inputHandler.getPassTypeSelectingUserAction();
-
-      StudyCafePasses passes = getFilteredStudyCafePasses(studyCafePassType);
-
-      outputHandler.showPassListForSelection(passes);
-
-      Pass selectedPass = getSelectedPassFromUserInput(passes);
-      LockerPass lockerPass = chooseLockerPass(selectedPass);
+      SeatPass selectedPass = selectPass();
+      LockerPass lockerPass = selectLockerPass(selectedPass);
 
       outputHandler.showPassOrderSummary(selectedPass, lockerPass);
 
@@ -47,9 +41,19 @@ public class StudyCafePassMachine {
     }
   }
 
-  private LockerPass chooseLockerPass(Pass selectedPass) {
+  private SeatPass selectPass() {
+    outputHandler.askPassTypeSelection();
+
+    StudyCafePassType studyCafePassType = inputHandler.getPassTypeSelectingUserAction();
+    SeatPasses passCandidates = findPassCandidatesBy(studyCafePassType);
+
+    outputHandler.showPassListForSelection(passCandidates);
+    return getSelectedPassFromUserInput(passCandidates);
+  }
+
+  private LockerPass selectLockerPass(SeatPass selectedPass) {
     if (selectedPass.canChooseLockerPass()) {
-      LockerPass lockerPass = getLockerPasses().getBy(selectedPass);
+      LockerPass lockerPass = getLockerSelection().findBy(selectedPass);
       if (checkLockerChosen(lockerPass)) {
         return lockerPass;
       }
@@ -64,15 +68,15 @@ public class StudyCafePassMachine {
     return lockerSelection;
   }
 
-  private LockerPasses getLockerPasses() {
-    return repository.getLockerPass();
+  private LockerPasses getLockerSelection() {
+    return lockerPassProvider.getLockerPasses();
   }
 
-  private StudyCafePasses getFilteredStudyCafePasses(StudyCafePassType studyCafePassType) {
-    return repository.getStudyCafePass().filtered(studyCafePassType);
+  private SeatPasses findPassCandidatesBy(StudyCafePassType studyCafePassType) {
+    return seatPassProvider.getSeatPasses().filtered(studyCafePassType);
   }
 
-  private Pass getSelectedPassFromUserInput(StudyCafePasses passes) {
+  private SeatPass getSelectedPassFromUserInput(SeatPasses passes) {
     int indexFromUser = inputHandler.getIndexFromUser(passes);
     return passes.get(indexFromUser);
   }

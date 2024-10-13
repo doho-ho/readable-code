@@ -1,13 +1,13 @@
 package cleancode.studycafe.tobe.io;
 
 import cleancode.studycafe.tobe.model.StudyCafePassType;
-import cleancode.studycafe.tobe.pass.StudyCafePasses;
+import cleancode.studycafe.tobe.model.seatpass.SeatPasses;
 
 public interface InputHandler {
 
   StudyCafePassType getPassTypeSelectingUserAction();
 
-  int getIndexFromUser(StudyCafePasses passes);
+  int getIndexFromUser(SeatPasses passes);
 
   boolean getLockerSelection();
 }

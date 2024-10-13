@@ -1,7 +1,7 @@
 package cleancode.studycafe.tobe.io;
 
 import cleancode.studycafe.tobe.model.StudyCafePassType;
-import cleancode.studycafe.tobe.pass.StudyCafePasses;
+import cleancode.studycafe.tobe.model.seatpass.SeatPasses;
 import java.util.Scanner;
 
 public class ConsoleInputHandler implements InputHandler {
@@ -15,7 +15,7 @@ public class ConsoleInputHandler implements InputHandler {
   }
 
   @Override
-  public int getIndexFromUser(StudyCafePasses passes) {
+  public int getIndexFromUser(SeatPasses passes) {
     String userInput = SCANNER.nextLine();
     return Integer.parseInt(userInput) - 1;
   }

@@ -1,11 +1,11 @@
 package cleancode.studycafe.tobe.io;
 
-import cleancode.studycafe.tobe.lockerpass.LockerPasses;
-import cleancode.studycafe.tobe.pass.StudyCafePasses;
+import cleancode.studycafe.tobe.model.lockerpass.LockerPasses;
+import cleancode.studycafe.tobe.model.seatpass.SeatPasses;
 
 public interface StudyCafeRepository {
 
   LockerPasses getLockerPass();
 
-  StudyCafePasses getStudyCafePass();
+  SeatPasses getStudyCafePass();
 }

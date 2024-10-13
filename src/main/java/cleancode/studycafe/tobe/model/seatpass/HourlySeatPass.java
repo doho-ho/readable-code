@@ -1,26 +1,26 @@
-package cleancode.studycafe.tobe.pass;
+package cleancode.studycafe.tobe.model.seatpass;
 
 import cleancode.studycafe.tobe.model.StudyCafePassType;
 
-public class WeeklyPass implements Pass {
+public class HourlySeatPass implements SeatPass {
 
   private final int duration;
   private final int price;
   private final double discountRate;
 
-  private WeeklyPass(int duration, int price, double discountRate) {
+  private HourlySeatPass(int duration, int price, double discountRate) {
     this.duration = duration;
     this.price = price;
     this.discountRate = discountRate;
   }
 
-  public static WeeklyPass of(int duration, int price, double discountRate) {
-    return new WeeklyPass(duration, price, discountRate);
+  public static HourlySeatPass of(int duration, int price, double discountRate) {
+    return new HourlySeatPass(duration, price, discountRate);
   }
 
   @Override
   public boolean isEqualsType(StudyCafePassType type) {
-    return StudyCafePassType.WEEKLY == type;
+    return StudyCafePassType.HOURLY == type;
   }
 
   @Override
@@ -54,11 +54,11 @@ public class WeeklyPass implements Pass {
 
   @Override
   public StudyCafePassType getType() {
-    return StudyCafePassType.WEEKLY;
+    return StudyCafePassType.HOURLY;
   }
 
   @Override
   public String toString() {
-    return String.format("%s주권 - %d원", duration, price);
+    return String.format("%s시간권 - %d원", duration, price);
   }
 }

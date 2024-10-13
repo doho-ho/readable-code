@@ -1,10 +1,10 @@
 package cleancode.studycafe.tobe.io;
 
-import cleancode.studycafe.tobe.lockerpass.LockerPass;
+import cleancode.studycafe.tobe.model.lockerpass.LockerPass;
 
 import cleancode.studycafe.tobe.model.StudyCafePassType;
-import cleancode.studycafe.tobe.pass.Pass;
-import cleancode.studycafe.tobe.pass.StudyCafePasses;
+import cleancode.studycafe.tobe.model.seatpass.SeatPass;
+import cleancode.studycafe.tobe.model.seatpass.SeatPasses;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -35,11 +35,11 @@ public class ConsoleOutputHandler implements OutputHandler {
   }
 
   @Override
-  public void showPassListForSelection(StudyCafePasses passes) {
+  public void showPassListForSelection(SeatPasses passes) {
     System.out.println();
     System.out.println("이용권 목록");
     for (int index = 0; index < passes.getSize(); index++) {
-      Pass pass = passes.get(index);
+      SeatPass pass = passes.get(index);
       System.out.println(String.format("%s. ", index + 1) + pass);
     }
   }
@@ -54,7 +54,7 @@ public class ConsoleOutputHandler implements OutputHandler {
   }
 
   @Override
-  public void showPassOrderSummary(Pass selectedPass, LockerPass lockerPass) {
+  public void showPassOrderSummary(SeatPass selectedPass, LockerPass lockerPass) {
     System.out.println();
     System.out.println("이용 내역");
     System.out.println("이용권: " + selectedPass);

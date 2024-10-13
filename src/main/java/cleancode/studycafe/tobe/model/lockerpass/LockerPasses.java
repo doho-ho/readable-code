@@ -1,6 +1,6 @@
-package cleancode.studycafe.tobe.lockerpass;
+package cleancode.studycafe.tobe.model.lockerpass;
 
-import cleancode.studycafe.tobe.pass.Pass;
+import cleancode.studycafe.tobe.model.seatpass.SeatPass;
 import java.util.List;
 
 public class LockerPasses {
@@ -15,7 +15,7 @@ public class LockerPasses {
     return new LockerPasses(passes);
   }
 
-  public LockerPass getBy(Pass pass) {
+  public LockerPass findBy(SeatPass pass) {
     return passes.stream()
         .filter(option -> option.isEqualDuration(pass.getDuration()))
         .filter(option -> option.isEqualType(pass.getType()))

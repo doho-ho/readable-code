@@ -1,19 +1,19 @@
-package cleancode.studycafe.tobe.lockerpass;
+package cleancode.studycafe.tobe.model.lockerpass;
 
 import cleancode.studycafe.tobe.model.StudyCafePassType;
 
-public class FixedLockerPass implements LockerPass {
+public class HourlyLockerPass implements LockerPass {
 
   private final int duration;
   private final int price;
 
-  private FixedLockerPass(int duration, int price) {
+  private HourlyLockerPass(int duration, int price) {
     this.duration = duration;
     this.price = price;
   }
 
-  public static FixedLockerPass of(int duration, int price) {
-    return new FixedLockerPass(duration, price);
+  public static HourlyLockerPass of(int duration, int price) {
+    return new HourlyLockerPass(duration, price);
   }
 
   @Override
@@ -28,11 +28,11 @@ public class FixedLockerPass implements LockerPass {
 
   @Override
   public boolean isEqualType(StudyCafePassType type) {
-    return StudyCafePassType.FIXED == type;
+    return StudyCafePassType.HOURLY == type;
   }
 
   @Override
   public String toString() {
-    return String.format("%s주권 - %d원", duration, price);
+    return String.format("%s시간권 - %d원", duration, price);
   }
 }

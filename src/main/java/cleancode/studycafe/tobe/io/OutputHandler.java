@@ -1,8 +1,8 @@
 package cleancode.studycafe.tobe.io;
 
-import cleancode.studycafe.tobe.lockerpass.LockerPass;
-import cleancode.studycafe.tobe.pass.Pass;
-import cleancode.studycafe.tobe.pass.StudyCafePasses;
+import cleancode.studycafe.tobe.model.lockerpass.LockerPass;
+import cleancode.studycafe.tobe.model.seatpass.SeatPass;
+import cleancode.studycafe.tobe.model.seatpass.SeatPasses;
 
 public interface OutputHandler {
 
@@ -12,11 +12,11 @@ public interface OutputHandler {
 
   void askPassTypeSelection();
 
-  void showPassListForSelection(StudyCafePasses passes);
+  void showPassListForSelection(SeatPasses passes);
 
   void askLockerPass(LockerPass lockerPass);
 
-  void showPassOrderSummary(Pass selectedPass, LockerPass lockerPass);
+  void showPassOrderSummary(SeatPass selectedPass, LockerPass lockerPass);
 
   void showExceptionMessage(Exception e);
 

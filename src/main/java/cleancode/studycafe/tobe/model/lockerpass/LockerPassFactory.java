@@ -13,6 +13,7 @@ public abstract class LockerPassFactory {
       case HOURLY -> hourlyPass(duration, price);
       case WEEKLY -> weeklyPass(duration, price);
       case FIXED -> fixedPass(duration, price);
+      default -> throw new IllegalArgumentException("잘못된 유형입니다.");
     };
   }
 

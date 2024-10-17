@@ -1,6 +1,6 @@
 package cleancode.studycafe.tobe.io;
 
-import cleancode.studycafe.asis.exception.AppException;
+import cleancode.studycafe.tobe.exception.AppException;
 import cleancode.studycafe.tobe.model.StudyCafePassType;
 
 public abstract class ConsoleStudyCafePassTypeConverter {
@@ -27,6 +27,7 @@ public abstract class ConsoleStudyCafePassTypeConverter {
       case HOURLY -> HOURLY_STRING;
       case WEEKLY -> WEEKLY_STRING;
       case FIXED -> FIXED_STRING;
+      default -> throw new IllegalArgumentException("잘못된 유형입니다.");
     };
   }
 

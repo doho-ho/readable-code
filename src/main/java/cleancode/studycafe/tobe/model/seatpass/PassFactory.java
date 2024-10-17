@@ -13,6 +13,7 @@ public abstract class PassFactory {
       case HOURLY -> hourlyPass(duration, price, discountRate);
       case WEEKLY -> weeklyPass(duration, price, discountRate);
       case FIXED -> fixedPass(duration, price, discountRate);
+      default -> throw new IllegalArgumentException("잘못된 유형입니다.");
     };
   }
 
